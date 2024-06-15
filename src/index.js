@@ -73,7 +73,9 @@ app.get('/read', async (req, res) => {
                 },
             },
         });
-        return res.status(200).json(data);
+        const hits = data.body.hits.hits;
+        const dataMatch = hits.map((hit) => hit._source);
+        return res.status(200).json(dataMatch);
     } catch (error) {
         return res.status(500).json(error);
     }

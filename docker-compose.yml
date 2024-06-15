@@ -1,11 +1,11 @@
 version: '3.3'
 services:
     elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
         container_name: elasticsearch
         restart: always
         environment:
-            - xpack.security.http.ssl.enabled=false
+            - xpack.security.enabled=false
             - discovery.type=single-node
             - ELASTIC_PASSWORD=123456789
         ulimits:
@@ -21,12 +21,15 @@ services:
             - ./esdata:/usr/share/elasticsearch/data
         ports:
             - 9200:9200
-            - 9300:9300
-        networks:
-            - elastic
-
+    kibana:
+        container_name: kibana
+        image: docker.elastic.co/kibana/kibana:7.4.0
+        restart: always
+        environment:
+            - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+        ports:
+            - 5601:5601
+        depends_on:
+            - elasticsearch
 volumes:
-    esdata:
-networks:
-    elastic:
-        driver: bridge
+    elasticsearch-data:
